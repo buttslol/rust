@@ -210,7 +210,7 @@ impl GenericPath for Path {
         match self.sepidx {
             None if bytes!(".") == self.repr.as_slice() => false,
             None => {
-                self.repr = vec!['.' as u8];
+                self.repr = vec!('.' as u8);
                 self.sepidx = None;
                 true
             }
@@ -278,7 +278,7 @@ impl GenericPath for Path {
         } else {
             let mut ita = self.components();
             let mut itb = base.components();
-            let mut comps = vec![];
+            let mut comps = vec!();
             loop {
                 match (ita.next(), itb.next()) {
                     (None, None) => break,
@@ -351,7 +351,7 @@ impl Path {
                 None => None,
                 Some(comps) => {
                     if is_abs && comps.is_empty() {
-                        Some(vec![SEP_BYTE])
+                        Some(vec!(SEP_BYTE))
                     } else {
                         let n = if is_abs { comps.len() } else { comps.len() - 1} +
                                 comps.iter().map(|v| v.len()).sum();
@@ -426,7 +426,7 @@ fn normalize_helper<'a>(v: &'a [u8], is_abs: bool) -> Option<Vec<&'a [u8]>> {
     if is_abs && v.as_slice().is_empty() {
         return None;
     }
-    let mut comps: Vec<&'a [u8]> = vec![];
+    let mut comps: Vec<&'a [u8]> = vec!();
     let mut n_up = 0u;
     let mut changed = false;
     for comp in v.split(is_sep_byte) {

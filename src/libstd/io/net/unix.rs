@@ -40,7 +40,7 @@ pub struct UnixStream {
 }
 
 impl UnixStream {
-    fn new(obj: ~RtioPipe:Send) -> UnixStream {
+    fn new(obj: ~RtioPipe) -> UnixStream {
         UnixStream { obj: PipeStream::new(obj) }
     }
 
@@ -83,7 +83,7 @@ impl Writer for UnixStream {
 /// A value that can listen for incoming named pipe connection requests.
 pub struct UnixListener {
     /// The internal, opaque runtime Unix listener.
-    obj: ~RtioUnixListener:Send,
+    obj: ~RtioUnixListener,
 }
 
 impl UnixListener {
@@ -125,7 +125,7 @@ impl Listener<UnixStream, UnixAcceptor> for UnixListener {
 /// A value that can accept named pipe connections, returned from `listen()`.
 pub struct UnixAcceptor {
     /// The internal, opaque runtime Unix acceptor.
-    obj: ~RtioUnixAcceptor:Send,
+    obj: ~RtioUnixAcceptor,
 }
 
 impl Acceptor<UnixStream> for UnixAcceptor {
@@ -141,7 +141,7 @@ mod tests {
     use io::*;
     use io::test::*;
 
-    pub fn smalltest(server: proc(UnixStream):Send, client: proc(UnixStream):Send) {
+    pub fn smalltest(server: proc(UnixStream), client: proc(UnixStream)) {
         let path1 = next_test_unix();
         let path2 = path1.clone();
 
