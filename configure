@@ -960,18 +960,28 @@ do
 
             LLVM_CXX_64="clang++ -Qunused-arguments"
             LLVM_CC_64="clang -Qunused-arguments"
-            LLVM_OPTS="$LLVM_OPTS --enable-libcpp"
+            if [ "$CFG_CPUTYPE" != armv7l ]; then
+                LLVM_OPTS="$LLVM_OPTS --enable-libcpp"
+            fi
             ;;
             ("ccache gcc")
-            LLVM_CXX_32="ccache g++ -m32"
-            LLVM_CC_32="ccache gcc -m32"
+            LLVM_CXX_32="ccache g++"
+            LLVM_CC_32="ccache gcc"
+            if [ "$CFG_CPUTYPE" != armv7l ]; then
+                LLVM_CXX_32="$LLVM_CXX_32 -m32"
+                LLVM_CC_32="$LLVM_CXX_32 -m32"
+            fi
 
             LLVM_CXX_64="ccache g++"
             LLVM_CC_64="ccache gcc"
             ;;
             ("gcc")
-            LLVM_CXX_32="g++ -m32"
-            LLVM_CC_32="gcc -m32"
+            LLVM_CXX_32="g++"
+            LLVM_CC_32="gcc"
+            if [ "$CFG_CPUTYPE" != armv7l ]; then
+                LLVM_CXX_32="$LLVM_CXX_32-m32"
+                LLVM_CC_32="$LLVM_CXX_32-m32"
+            fi
 
             LLVM_CXX_64="g++"
             LLVM_CC_64="gcc"
