@@ -529,7 +529,7 @@ impl GenericPath for Path {
         } else {
             let mut ita = self.str_components().map(|x|x.unwrap());
             let mut itb = base.str_components().map(|x|x.unwrap());
-            let mut comps = vec![];
+            let mut comps = vec!();
 
             let a_verb = is_verbatim(self);
             let b_verb = is_verbatim(base);
@@ -717,12 +717,12 @@ impl Path {
             match (comps.is_some(),prefix) {
                 (false, Some(DiskPrefix)) => {
                     if s[0] >= 'a' as u8 && s[0] <= 'z' as u8 {
-                        comps = Some(vec![]);
+                        comps = Some(vec!());
                     }
                 }
                 (false, Some(VerbatimDiskPrefix)) => {
                     if s[4] >= 'a' as u8 && s[0] <= 'z' as u8 {
-                        comps = Some(vec![]);
+                        comps = Some(vec!());
                     }
                 }
                 _ => ()
@@ -1040,11 +1040,11 @@ fn normalize_helper<'a>(s: &'a str, prefix: Option<PathPrefix>) -> (bool, Option
     if is_abs && s_.is_empty() {
         return (is_abs, match prefix {
             Some(DiskPrefix) | None => (if is_sep_verbatim(s.char_at(prefix_len(prefix))) { None }
-                                        else { Some(vec![]) }),
-            Some(_) => Some(vec![]), // need to trim the trailing separator
+                                        else { Some(vec!()) }),
+            Some(_) => Some(vec!()), // need to trim the trailing separator
         });
     }
-    let mut comps: Vec<&'a str> = vec![];
+    let mut comps: Vec<&'a str> = vec!();
     let mut n_up = 0u;
     let mut changed = false;
     for comp in s_.split(f) {

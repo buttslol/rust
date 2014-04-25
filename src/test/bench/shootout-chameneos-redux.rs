@@ -70,7 +70,7 @@ fn show_digit(nn: uint) -> &'static str {
 struct Number(uint);
 impl fmt::Show for Number {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut out = vec![];
+        let mut out = vec!();
         let Number(mut num) = *self;
         if num == 0 { out.push(show_digit(0)) };
 

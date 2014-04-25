@@ -37,10 +37,10 @@ pub trait Callback {
 
 pub trait EventLoop {
     fn run(&mut self);
-    fn callback(&mut self, arg: proc():Send);
+    fn callback(&mut self, arg: proc());
     fn pausable_idle_callback(&mut self,
-                              ~Callback:Send) -> ~PausableIdleCallback:Send;
-    fn remote_callback(&mut self, ~Callback:Send) -> ~RemoteCallback:Send;
+                              ~Callback) -> ~PausableIdleCallback;
+    fn remote_callback(&mut self, ~Callback) -> ~RemoteCallback;
 
     /// The asynchronous I/O services. Not all event loops may provide one.
     fn io<'a>(&'a mut self) -> Option<&'a mut IoFactory>;
@@ -147,20 +147,20 @@ impl<'a> LocalIo<'a> {
 pub trait IoFactory {
     // networking
     fn tcp_connect(&mut self, addr: SocketAddr,
-                   timeout: Option<u64>) -> IoResult<~RtioTcpStream:Send>;
-    fn tcp_bind(&mut self, addr: SocketAddr) -> IoResult<~RtioTcpListener:Send>;
-    fn udp_bind(&mut self, addr: SocketAddr) -> IoResult<~RtioUdpSocket:Send>;
+                   timeout: Option<u64>) -> IoResult<~RtioTcpStream>;
+    fn tcp_bind(&mut self, addr: SocketAddr) -> IoResult<~RtioTcpListener>;
+    fn udp_bind(&mut self, addr: SocketAddr) -> IoResult<~RtioUdpSocket>;
     fn unix_bind(&mut self, path: &CString)
-        -> IoResult<~RtioUnixListener:Send>;
-    fn unix_connect(&mut self, path: &CString) -> IoResult<~RtioPipe:Send>;
+        -> IoResult<~RtioUnixListener>;
+    fn unix_connect(&mut self, path: &CString) -> IoResult<~RtioPipe>;
     fn get_host_addresses(&mut self, host: Option<&str>, servname: Option<&str>,
                           hint: Option<ai::Hint>) -> IoResult<~[ai::Info]>;
 
     // filesystem operations
     fn fs_from_raw_fd(&mut self, fd: c_int, close: CloseBehavior)
-        -> ~RtioFileStream:Send;
+        -> ~RtioFileStream;
     fn fs_open(&mut self, path: &CString, fm: FileMode, fa: FileAccess)
-        -> IoResult<~RtioFileStream:Send>;
+        -> IoResult<~RtioFileStream>;
     fn fs_unlink(&mut self, path: &CString) -> IoResult<()>;
     fn fs_stat(&mut self, path: &CString) -> IoResult<FileStat>;
     fn fs_mkdir(&mut self, path: &CString,
@@ -181,23 +181,23 @@ pub trait IoFactory {
         IoResult<()>;
 
     // misc
-    fn timer_init(&mut self) -> IoResult<~RtioTimer:Send>;
+    fn timer_init(&mut self) -> IoResult<~RtioTimer>;
     fn spawn(&mut self, config: ProcessConfig)
-            -> IoResult<(~RtioProcess:Send, ~[Option<~RtioPipe:Send>])>;
+            -> IoResult<(~RtioProcess, ~[Option<~RtioPipe>])>;
     fn kill(&mut self, pid: libc::pid_t, signal: int) -> IoResult<()>;
-    fn pipe_open(&mut self, fd: c_int) -> IoResult<~RtioPipe:Send>;
+    fn pipe_open(&mut self, fd: c_int) -> IoResult<~RtioPipe>;
     fn tty_open(&mut self, fd: c_int, readable: bool)
-            -> IoResult<~RtioTTY:Send>;
+            -> IoResult<~RtioTTY>;
     fn signal(&mut self, signal: Signum, channel: Sender<Signum>)
-        -> IoResult<~RtioSignal:Send>;
+        -> IoResult<~RtioSignal>;
 }
 
 pub trait RtioTcpListener : RtioSocket {
-    fn listen(~self) -> IoResult<~RtioTcpAcceptor:Send>;
+    fn listen(~self) -> IoResult<~RtioTcpAcceptor>;
 }
 
 pub trait RtioTcpAcceptor : RtioSocket {
-    fn accept(&mut self) -> IoResult<~RtioTcpStream:Send>;
+    fn accept(&mut self) -> IoResult<~RtioTcpStream>;
     fn accept_simultaneously(&mut self) -> IoResult<()>;
     fn dont_accept_simultaneously(&mut self) -> IoResult<()>;
 }
@@ -210,7 +210,7 @@ pub trait RtioTcpStream : RtioSocket {
     fn nodelay(&mut self) -> IoResult<()>;
     fn keepalive(&mut self, delay_in_seconds: uint) -> IoResult<()>;
     fn letdie(&mut self) -> IoResult<()>;
-    fn clone(&self) -> ~RtioTcpStream:Send;
+    fn clone(&self) -> ~RtioTcpStream;
     fn close_write(&mut self) -> IoResult<()>;
 }
 
@@ -234,7 +234,7 @@ pub trait RtioUdpSocket : RtioSocket {
     fn hear_broadcasts(&mut self) -> IoResult<()>;
     fn ignore_broadcasts(&mut self) -> IoResult<()>;
 
-    fn clone(&self) -> ~RtioUdpSocket:Send;
+    fn clone(&self) -> ~RtioUdpSocket;
 }
 
 pub trait RtioTimer {
@@ -264,15 +264,15 @@ pub trait RtioProcess {
 pub trait RtioPipe {
     fn read(&mut self, buf: &mut [u8]) -> IoResult<uint>;
     fn write(&mut self, buf: &[u8]) -> IoResult<()>;
-    fn clone(&self) -> ~RtioPipe:Send;
+    fn clone(&self) -> ~RtioPipe;
 }
 
 pub trait RtioUnixListener {
-    fn listen(~self) -> IoResult<~RtioUnixAcceptor:Send>;
+    fn listen(~self) -> IoResult<~RtioUnixAcceptor>;
 }
 
 pub trait RtioUnixAcceptor {
-    fn accept(&mut self) -> IoResult<~RtioPipe:Send>;
+    fn accept(&mut self) -> IoResult<~RtioPipe>;
 }
 
 pub trait RtioTTY {

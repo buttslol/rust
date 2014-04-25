@@ -1047,7 +1047,7 @@ mod tests {
     #[cfg(test)]
     fn fuzz_test(sz: int) {
         let mut m: DList<int> = DList::new();
-        let mut v = vec![];
+        let mut v = vec!();
         for i in range(0, sz) {
             check_links(&m);
             let r: u8 = rand::random();

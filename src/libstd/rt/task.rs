@@ -51,14 +51,14 @@ pub struct Task {
     pub destroyed: bool,
     pub name: Option<SendStr>,
 
-    pub stdout: Option<~Writer:Send>,
-    pub stderr: Option<~Writer:Send>,
+    pub stdout: Option<~Writer>,
+    pub stderr: Option<~Writer>,
 
-    imp: Option<~Runtime:Send>,
+    imp: Option<~Runtime>,
 }
 
 pub struct GarbageCollector;
-pub struct LocalStorage(pub Option<local_data::Map>);
+pub struct LocalStorage(Option<local_data::Map>);
 
 /// A handle to a blocked task. Usually this means having the ~Task pointer by
 /// ownership, but if the task is killable, a killer can steal it at any time.
@@ -70,7 +70,7 @@ pub enum BlockedTask {
 pub enum DeathAction {
     /// Action to be done with the exit code. If set, also makes the task wait
     /// until all its watched children exit before collecting the status.
-    Execute(proc(TaskResult):Send),
+    Execute(proc(TaskResult)),
     /// A channel to send the result of the task on when the task exits
     SendMessage(Sender<TaskResult>),
 }
@@ -195,7 +195,7 @@ impl Task {
     /// Inserts a runtime object into this task, transferring ownership to the
     /// task. It is illegal to replace a previous runtime object in this task
     /// with this argument.
-    pub fn put_runtime(&mut self, ops: ~Runtime:Send) {
+    pub fn put_runtime(&mut self, ops: ~Runtime) {
         assert!(self.imp.is_none());
         self.imp = Some(ops);
     }
@@ -225,7 +225,7 @@ impl Task {
                 Ok(t) => Some(t),
                 Err(t) => {
                     let (_, obj): (uint, uint) = cast::transmute(t);
-                    let obj: ~Runtime:Send = cast::transmute((vtable, obj));
+                    let obj: ~Runtime = cast::transmute((vtable, obj));
                     self.put_runtime(obj);
                     None
                 }
@@ -235,7 +235,7 @@ impl Task {
 
     /// Spawns a sibling to this task. The newly spawned task is configured with
     /// the `opts` structure and will run `f` as the body of its code.
-    pub fn spawn_sibling(mut ~self, opts: TaskOpts, f: proc():Send) {
+    pub fn spawn_sibling(mut ~self, opts: TaskOpts, f: proc()) {
         let ops = self.imp.take_unwrap();
         ops.spawn_sibling(self, opts, f)
     }

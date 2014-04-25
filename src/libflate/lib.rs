@@ -117,7 +117,7 @@ mod tests {
             words.push(r.gen_vec::<u8>(range));
         }
         for _ in range(0, 20) {
-            let mut input = vec![];
+            let mut input = vec!();
             for _ in range(0, 2000) {
                 input.push_all(r.choose(words.as_slice()).as_slice());
             }

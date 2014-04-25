@@ -1096,7 +1096,7 @@ mod test_treemap {
     #[test]
     fn test_rand_int() {
         let mut map: TreeMap<int,int> = TreeMap::new();
-        let mut ctrl = vec![];
+        let mut ctrl = vec!();
 
         check_equal(ctrl.as_slice(), &map);
         assert!(map.find(&5).is_none());

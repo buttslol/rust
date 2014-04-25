@@ -132,7 +132,7 @@ pub struct StackPool {
 impl StackPool {
     pub fn new() -> StackPool {
         StackPool {
-            stacks: vec![],
+            stacks: vec!(),
         }
     }
 

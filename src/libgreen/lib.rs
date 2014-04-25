@@ -396,9 +396,9 @@ impl SchedPool {
         // The pool of schedulers that will be returned from this function
         let (p, state) = TaskState::new();
         let mut pool = SchedPool {
-            threads: vec![],
-            handles: vec![],
-            stealers: vec![],
+            threads: vec!(),
+            handles: vec!(),
+            stealers: vec!(),
             id: unsafe { POOL_ID.fetch_add(1, SeqCst) },
             sleepers: SleeperList::new(),
             stack_pool: StackPool::new(),
@@ -512,7 +512,7 @@ impl SchedPool {
     /// This only waits for all tasks in *this pool* of schedulers to exit, any
     /// native tasks or extern pools will not be waited on
     pub fn shutdown(mut self) {
-        self.stealers = vec![];
+        self.stealers = vec!();
 
         // Wait for everyone to exit. We may have reached a 0-task count
         // multiple times in the past, meaning there could be several buffered
@@ -524,10 +524,10 @@ impl SchedPool {
         }
 
         // Now that everyone's gone, tell everything to shut down.
-        for mut handle in replace(&mut self.handles, vec![]).move_iter() {
+        for mut handle in replace(&mut self.handles, vec!()).move_iter() {
             handle.send(Shutdown);
         }
-        for thread in replace(&mut self.threads, vec![]).move_iter() {
+        for thread in replace(&mut self.threads, vec!()).move_iter() {
             thread.join();
         }
     }

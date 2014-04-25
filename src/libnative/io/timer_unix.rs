@@ -102,8 +102,8 @@ fn helper(input: libc::c_int, messages: Receiver<Req>) {
     // active timers are those which are able to be selected upon (and it's a
     // sorted list, and dead timers are those which have expired, but ownership
     // hasn't yet been transferred back to the timer itself.
-    let mut active: Vec<~Inner> = vec![];
-    let mut dead = vec![];
+    let mut active: Vec<~Inner> = vec!();
+    let mut dead = vec!();
 
     // inserts a timer into an array of timers (sorted by firing time)
     fn insert(t: ~Inner, active: &mut Vec<~Inner>) {

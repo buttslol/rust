@@ -39,8 +39,8 @@ pub enum Req {
 }
 
 fn helper(input: libc::HANDLE, messages: Receiver<Req>) {
-    let mut objs = vec![input];
-    let mut chans = vec![];
+    let mut objs = vec!(input);
+    let mut chans = vec!();
 
     'outer: loop {
         let idx = unsafe {

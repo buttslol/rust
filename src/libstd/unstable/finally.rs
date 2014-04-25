@@ -38,7 +38,7 @@ pub trait Finally<T> {
     fn finally(&self, dtor: ||) -> T;
 }
 
-impl<'a,T> Finally<T> for ||: 'a -> T {
+impl<'a,T> Finally<T> for ||-> T {
     fn finally(&self, dtor: ||) -> T {
         try_finally(&mut (), (),
                     |_, _| (*self)(),
@@ -100,7 +100,7 @@ pub fn try_finally<T,U,R>(mutate: &mut T,
 
 struct Finallyalizer<'a,A> {
     mutate: &'a mut A,
-    dtor: |&mut A|: 'a
+    dtor: |&mut A|
 }
 
 #[unsafe_destructor]

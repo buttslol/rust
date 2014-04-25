@@ -39,7 +39,7 @@ impl Access {
     pub fn new() -> Access {
         Access {
             inner: UnsafeArc::new(Inner {
-                queue: vec![],
+                queue: vec!(),
                 held: false,
             })
         }

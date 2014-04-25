@@ -912,26 +912,26 @@ mod tests {
         same("{, select, other { haha } }", [Argument(Argument{
             position: ArgumentNext,
             format: fmtdflt(),
-            method: Some(~Select(vec![], vec![String(" haha ")]))
+            method: Some(~Select(vec!(), vec!(String(" haha "))))
         })]);
         same("{1, select, other { haha } }", [Argument(Argument{
             position: ArgumentIs(1),
             format: fmtdflt(),
-            method: Some(~Select(vec![], vec![String(" haha ")]))
+            method: Some(~Select(vec!(), vec!(String(" haha "))))
         })]);
         same("{1, select, other {#} }", [Argument(Argument{
             position: ArgumentIs(1),
             format: fmtdflt(),
-            method: Some(~Select(vec![], vec![CurrentArgument]))
+            method: Some(~Select(vec!(), vec!(CurrentArgument)))
         })]);
         same("{1, select, other {{2, select, other {lol}}} }", [Argument(Argument{
             position: ArgumentIs(1),
             format: fmtdflt(),
-            method: Some(~Select(vec![], vec![Argument(Argument{
+            method: Some(~Select(vec!(), vec!(Argument(Argument{
                 position: ArgumentIs(2),
                 format: fmtdflt(),
-                method: Some(~Select(vec![], vec![String("lol")]))
-            })])) // wat
+                method: Some(~Select(vec!(), vec![String("lol")]))
+            })))) // wat
         })]);
     }
 
@@ -940,46 +940,12 @@ mod tests {
         same("{1, select, a{1} b{2} c{3} other{4} }", [Argument(Argument{
             position: ArgumentIs(1),
             format: fmtdflt(),
-            method: Some(~Select(vec![
-                SelectArm{ selector: "a", result: vec![String("1")] },
-                SelectArm{ selector: "b", result: vec![String("2")] },
-                SelectArm{ selector: "c", result: vec![String("3")] },
-            ], vec![String("4")]))
+            method: Some(~Select(vec!(
+                SelectArm{ selector: "a", result: vec!(String("1")) },
+                SelectArm{ selector: "b", result: vec!(String("2")) },
+                SelectArm{ selector: "c", result: vec!(String("3")) },
+            ), vec!(String("4"))))
         })]);
     }
 
-    #[test] fn badselect01() { musterr("{select, }") }
-    #[test] fn badselect02() { musterr("{1, select}") }
-    #[test] fn badselect03() { musterr("{1, select, }") }
-    #[test] fn badselect04() { musterr("{1, select, a {}}") }
-    #[test] fn badselect05() { musterr("{1, select, other }}") }
-    #[test] fn badselect06() { musterr("{1, select, other {}") }
-    #[test] fn badselect07() { musterr("{select, other {}") }
-    #[test] fn badselect08() { musterr("{1 select, other {}") }
-    #[test] fn badselect09() { musterr("{:d select, other {}") }
-    #[test] fn badselect10() { musterr("{1:d select, other {}") }
-
-    #[test]
-    fn plural_simple() {
-        same("{, plural, other { haha } }", [Argument(Argument{
-            position: ArgumentNext,
-            format: fmtdflt(),
-            method: Some(~Plural(None, vec![], vec![String(" haha ")]))
-        })]);
-        same("{:, plural, other { haha } }", [Argument(Argument{
-            position: ArgumentNext,
-            format: fmtdflt(),
-            method: Some(~Plural(None, vec![], vec![String(" haha ")]))
-        })]);
-        same("{, plural, offset:1 =2{2} =3{3} many{yes} other{haha} }",
-        [Argument(Argument{
-            position: ArgumentNext,
-            format: fmtdflt(),
-            method: Some(~Plural(Some(1), vec![
-                PluralArm{ selector: Literal(2), result: vec![String("2")] },
-                PluralArm{ selector: Literal(3), result: vec![String("3")] },
-                PluralArm{ selector: Keyword(Many), result: vec![String("yes")] }
-            ], vec![String("haha")]))
-        })]);
-    }
 }

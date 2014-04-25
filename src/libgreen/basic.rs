@@ -39,18 +39,18 @@ enum Message { RunRemote(uint), RemoveRemote(uint) }
 impl BasicLoop {
     fn new() -> BasicLoop {
         BasicLoop {
-            work: vec![],
+            work: vec!(),
             idle: None,
             next_remote: 0,
-            remotes: vec![],
-            messages: Exclusive::new(vec![]),
+            remotes: vec!(),
+            messages: Exclusive::new(vec!()),
         }
     }
 
     /// Process everything in the work queue (continually)
     fn work(&mut self) {
         while self.work.len() > 0 {
-            for work in replace(&mut self.work, vec![]).move_iter() {
+            for work in replace(&mut self.work, vec!()).move_iter() {
                 work();
             }
         }
@@ -60,7 +60,7 @@ impl BasicLoop {
         let messages = unsafe {
             self.messages.with(|messages| {
                 if messages.len() > 0 {
-                    Some(replace(messages, vec![]))
+                    Some(replace(messages, vec!()))
                 } else {
                     None
                 }

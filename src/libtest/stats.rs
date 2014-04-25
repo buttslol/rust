@@ -170,7 +170,7 @@ impl<'a> Stats for &'a [f64] {
     // FIXME #11059 handle NaN, inf and overflow
     #[allow(deprecated_owned_vector)]
     fn sum(self) -> f64 {
-        let mut partials = vec![];
+        let mut partials = vec!();
 
         for &mut x in self.iter() {
             let mut j = 0;

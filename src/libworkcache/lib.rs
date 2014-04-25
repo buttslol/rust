@@ -321,7 +321,7 @@ impl Exec {
 
     // returns pairs of (kind, name)
     pub fn lookup_discovered_inputs(&self) -> Vec<(~str, ~str)> {
-        let mut rs = vec![];
+        let mut rs = vec!();
         let WorkMap(ref discovered_inputs) = self.discovered_inputs;
         for (k, v) in discovered_inputs.iter() {
             let KindMap(ref vmap) = *v;
@@ -343,7 +343,7 @@ impl<'a> Prep<'a> {
     }
 
     pub fn lookup_declared_inputs(&self) -> Vec<~str> {
-        let mut rs = vec![];
+        let mut rs = vec!();
         let WorkMap(ref declared_inputs) = self.declared_inputs;
         for (_, v) in declared_inputs.iter() {
             let KindMap(ref vmap) = *v;
@@ -392,17 +392,17 @@ impl<'a> Prep<'a> {
         return true;
     }
 
-    pub fn exec<'a, T:Send +
+    pub fn exec<'a, T +
         Encodable<json::Encoder<'a>, io::IoError> +
         Decodable<json::Decoder, json::Error>>(
-            &'a self, blk: proc(&mut Exec):Send -> T) -> T {
+            &'a self, blk: proc(&mut Exec) -> T) -> T {
         self.exec_work(blk).unwrap()
     }
 
-    fn exec_work<'a, T:Send +
+    fn exec_work<'a, T +
         Encodable<json::Encoder<'a>, io::IoError> +
         Decodable<json::Decoder, json::Error>>( // FIXME(#5121)
-            &'a self, blk: proc(&mut Exec):Send -> T) -> Work<'a, T> {
+            &'a self, blk: proc(&mut Exec) -> T) -> Work<'a, T> {
         let mut bo = Some(blk);
 
         debug!("exec_work: looking up {} and {:?}", self.fn_name,
@@ -443,7 +443,7 @@ impl<'a> Prep<'a> {
     }
 }
 
-impl<'a, T:Send +
+impl<'a, T +
        Encodable<json::Encoder<'a>, io::IoError> +
        Decodable<json::Decoder, json::Error>>
     Work<'a, T> { // FIXME(#5121)

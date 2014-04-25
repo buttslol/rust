@@ -1325,7 +1325,7 @@ mod test {
     #[test]
     fn multithreading() {
         run(proc() {
-            let mut rxs = vec![];
+            let mut rxs = vec!();
             for _ in range(0, 10) {
                 let (tx, rx) = channel();
                 spawn(proc() {
