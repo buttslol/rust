@@ -950,7 +950,9 @@ do
 
             LLVM_CXX_64="ccache clang++ -Qunused-arguments"
             LLVM_CC_64="ccache clang -Qunused-arguments"
-            LLVM_OPTS="$LLVM_OPTS --enable-libcpp"
+            if [ "$CFG_CPUTYPE" != armv7l ]; then
+                LLVM_OPTS="$LLVM_OPTS --enable-libcpp"
+            fi
             ;;
             ("clang")
             LLVM_CXX_32="clang++ -m32 -Qunused-arguments"
